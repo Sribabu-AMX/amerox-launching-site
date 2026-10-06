@@ -1,0 +1,70 @@
+export const metadata = {
+  title: "Developer overview",
+  description: "Integrate the Amerox wallet into your dapp: provider, discovery and how requests are handled.",
+};
+
+# Developer overview
+
+Amerox injects a standard **[EIP-1193](https://eips.ethereum.org/EIPS/eip-1193)** provider into every web page and announces it through **[EIP-6963](https://eips.ethereum.org/EIPS/eip-6963)**. If your dapp works with injected wallets, it works with Amerox.
+
+| | |
+|---|---|
+| EIP-6963 `rdns` | `io.amerox.wallet` |
+| EIP-6963 `name` | `Amerox` |
+| Provider flag | `provider.isAmerox === true` |
+| Globals | `window.amerox` always; `window.ethereum` only if no other wallet has claimed it |
+| Signing | `personal_sign`, `eth_signTypedData_v4`, `eth_signTypedData_v3` |
+| Chains | Six built in, including Amero X Network (chain `3535`); any EVM chain can be added |
+
+## Quick start
+
+```ts
+// 1. Discover Amerox (EIP-6963)
+let amerox: any;
+window.addEventListener("eip6963:announceProvider", (event: any) => {
+  if (event.detail.info.rdns === "io.amerox.wallet") amerox = event.detail.provider;
+});
+window.dispatchEvent(new Event("eip6963:requestProvider"));
+
+// 2. Connect
+const [account] = await amerox.request({ method: "eth_requestAccounts" });
+
+// 3. Read the chain — don't rely on provider.chainId
+const chainId = await amerox.request({ method: "eth_chainId" }); // e.g. "0xdcf" for Amero X
+
+// 4. React to changes
+amerox.on("accountsChanged", (accounts: string[]) => { /* … */ });
+amerox.on("chainChanged", (chainId: string) => { /* … */ });
+```
+
+## How Amerox handles a request
+
+Every request is sorted into one of five groups. The decision is made inside the extension's background worker, based on the page's real origin — nothing the page sends can change it.
+
+| Group | Behaviour | Examples |
+|---|---|---|
+| **Open** | Answered immediately, no connection needed. | `eth_chainId`, `eth_accounts` |
+| **Prompt** | Opens an approval window **every time** — there is no "remember my choice". | `eth_sendTransaction`, `personal_sign`, `wallet_switchEthereumChain` |
+| **Granted** | Needs an existing connection, no prompt. | `wallet_getPermissions` |
+| **Proxy** | Forwarded to the active network's RPC endpoint, rate-limited. | `eth_call`, `eth_getBalance`, `eth_getLogs` |
+| **Refused** | Never supported. Returns `4200` with the reason. | `eth_sign`, `eth_signTransaction` |
+
+The full list is in [RPC methods](/docs/developers/rpc-methods).
+
+<Callout type="info" title="Things that differ from some other wallets">
+- `provider.chainId` is not maintained — call `eth_chainId`.
+- `eth_sign`, `eth_signTransaction` and legacy `eth_signTypedData` (v1) are refused with `4200`.
+- `wallet_addEthereumChain` adds a chain but does not switch to it. Call `wallet_switchEthereumChain` afterwards.
+- Amerox never overwrites another wallet's `window.ethereum`. Use EIP-6963 to find it reliably.
+</Callout>
+
+## In this section
+
+<Cards>
+  <Card title="Detect the wallet" href="/docs/developers/detect">EIP-6963 discovery and fallbacks.</Card>
+  <Card title="Connect and accounts" href="/docs/developers/connect">Connection, permissions and account events.</Card>
+  <Card title="RPC methods" href="/docs/developers/rpc-methods">The complete method reference.</Card>
+  <Card title="Networks and Amero X" href="/docs/developers/networks">Switching, adding chains, Amero X parameters.</Card>
+  <Card title="Events and errors" href="/docs/developers/events-errors">What the provider emits and every error code.</Card>
+  <Card title="Libraries" href="/docs/developers/libraries">viem, wagmi and ethers setup.</Card>
+</Cards>

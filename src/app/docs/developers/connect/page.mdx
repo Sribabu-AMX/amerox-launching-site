@@ -1,0 +1,60 @@
+export const metadata = {
+  title: "Connect and accounts",
+  description: "Request accounts, read permissions and handle disconnection in Amerox.",
+};
+
+# Connect and accounts
+
+## Connecting
+
+```ts
+const accounts: string[] = await amerox.request({ method: "eth_requestAccounts" });
+```
+
+- If the site is already connected and the wallet is unlocked, the granted accounts are returned **without a prompt**.
+- Otherwise Amerox opens a connection window. If the wallet is locked, the user unlocks it in the same window.
+- The user chooses which accounts to share. You receive only those — switching accounts in the wallet never silently exposes another address to your site.
+- If the user rejects, the promise rejects with code `4001`.
+
+Addresses are returned in lowercase hex.
+
+## Reading accounts without a prompt
+
+```ts
+const accounts: string[] = await amerox.request({ method: "eth_accounts" });
+```
+
+Returns the connected accounts, or `[]` if your site isn't connected **or the wallet is locked**. It never prompts.
+
+## Permissions (EIP-2255)
+
+| Method | Behaviour |
+|---|---|
+| `wallet_requestPermissions` | Opens the same connection window as `eth_requestAccounts`. Resolves with an `eth_accounts` permission whose `restrictReturnedAccounts` caveat lists the granted accounts. |
+| `wallet_getPermissions` | Returns the current `eth_accounts` permission, or `[]`. Needs an existing connection. |
+| `wallet_revokePermissions` | Disconnects your site. Emits `accountsChanged` with `[]` and `disconnect` (code `4900`). Resolves with `null`. |
+
+```ts
+// Let the user disconnect from your UI
+await amerox.request({
+  method: "wallet_revokePermissions",
+  params: [{ eth_accounts: {} }],
+});
+```
+
+## Events to handle
+
+```ts
+amerox.on("connect", ({ chainId }) => {});        // after the user approves a connection
+amerox.on("accountsChanged", (accounts) => {});  // [] means disconnected or locked out
+amerox.on("chainChanged", (chainId) => {});      // hex string, e.g. "0x38"
+amerox.on("disconnect", (error) => {});          // { code: 4900, message }
+```
+
+`accountsChanged` fires when the user connects, switches the active account, or disconnects your site from the wallet's **Sites** screen. See [Events and errors](/docs/developers/events-errors).
+
+## Requests that need a connection
+
+Everything that prompts — transactions, signatures, chain switches, `wallet_watchAsset` — requires your site to be connected first, except `wallet_addEthereumChain`. Without a connection these reject with `4100 Connect to this wallet first.`
+
+Signing requests must also name an account your site was granted; otherwise they reject with `4100 That account is not available to this site.`

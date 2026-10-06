@@ -1,0 +1,56 @@
+export const metadata = {
+  title: "Create or import a wallet",
+  description: "Set up a new Amerox wallet or restore an existing one from its recovery phrase.",
+};
+
+# Create or import a wallet
+
+When you open Amerox for the first time, click **Get started**. Setup opens in a browser tab, where you choose **Create a new wallet** or **Import an existing wallet**.
+
+## Create a new wallet
+
+<Steps>
+
+### Choose a password
+
+The password encrypts your wallet **on this device**. It must be at least **10 characters**, and Amerox shows how strong it is as you type. A few unrelated words make a stronger password than one word with a number on the end.
+
+The password is not a way to recover your wallet — only the recovery phrase is.
+
+<Screens items={[{ src: "/shots/extension/onboarding-password.png", alt: "Choosing a password with the strength meter", caption: "The strength meter rates your password as you type." }]} />
+
+### Back up your recovery phrase
+
+Amerox generates a new recovery phrase and keeps it blurred until you choose to reveal it. Write the words down **on paper, in order**, and keep the paper somewhere safe.
+
+<Callout type="danger" title="Don't photograph it or store it in the cloud">
+Photos and cloud notes are the most common way recovery phrases are stolen. Anyone with these words controls the wallet — permanently.
+</Callout>
+
+<Screens items={[{ src: "/shots/extension/onboarding-backup.png", alt: "The recovery phrase, blurred until revealed", caption: "The phrase stays blurred until you reveal it." }]} />
+
+### Verify the backup
+
+Amerox asks for a few words from the phrase to confirm you wrote them down correctly. This step can't be skipped. When it's done, your wallet is ready.
+
+</Steps>
+
+## Import an existing wallet
+
+Use this to restore your Amerox wallet on a new device, or to bring in a wallet from another app.
+
+1. Choose **Import an existing wallet**.
+2. Enter your **12- or 24-word** recovery phrase. Amerox checks each word against the standard word list and tells you if one is wrong.
+3. Set a password for this device.
+
+Before importing anything, Amerox looks for accounts you've already used: it checks the first five addresses of each of the three common address layouts (standard, Ledger Live and Ledger legacy) for activity on the current network, and lets you choose which to bring in. Your first account is always restored. You can skip the scan, and add more accounts later from [Accounts](/docs/accounts).
+
+<Callout type="info" title="Coming from MetaMask or Ledger Live?">
+Wallets disagree about where a recovery phrase puts its accounts — that's why Amerox checks all three layouts. The scan only sees the network you're on, so an account used only on another chain may not show up; you can still add it later. See [Accounts → Address layout](/docs/accounts#address-layout).
+</Callout>
+
+## Unlocking
+
+Each time the wallet locks, unlock it with your password. Amerox locks automatically after the time you choose in **Settings → Auto-lock**: 1, 5, 15 or 30 minutes.
+
+Forgot your password? See [Back up and recover](/docs/backup#forgot-your-password).

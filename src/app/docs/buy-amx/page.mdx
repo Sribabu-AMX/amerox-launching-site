@@ -1,0 +1,49 @@
+export const metadata = {
+  title: "Buy AMX",
+  description: "Buy AMX with BNB, USDT or USDC on BNB Smart Chain and receive it on Amero X Network.",
+};
+
+# Buy AMX
+
+**Buy AMX** lets you buy AMX, the native coin of Amero X Network, directly from the wallet.
+
+## How it works
+
+1. You pay on **BNB Smart Chain**, in **BNB, USDT or USDC**, to the AMX sale contract.
+2. An Amerox relayer sees your purchase and releases the AMX from the AMX vault on **Amero X Network**.
+3. The AMX arrives at **your same address** on Amero X Network.
+
+Because payment and delivery happen on two different networks, the AMX usually arrives shortly after your payment is confirmed — Amerox tracks it for you.
+
+## Before you start
+
+- You need BNB Smart Chain funds: the amount you want to spend, plus a little BNB for the network fee.
+- The price per AMX, and the minimum and maximum you can buy in one purchase, are set by the sale contract. Amerox reads them from the contract and shows them before you confirm.
+
+## Buy
+
+<Steps>
+
+### Open Buy AMX
+
+From the home screen, choose **Buy**. You don't need to switch networks first — the payment is always made on BNB Smart Chain.
+
+### Choose what to pay with
+
+Select **BNB**, **USDT** or **USDC** and enter the amount. Amerox shows how much AMX you'll receive.
+
+<Screens items={[{ src: "/shots/extension/buy-amx.png", alt: "Buying AMX with 0.5 BNB", caption: "The purchase limits are shown under the form." }]} />
+
+### Approve (USDT and USDC only)
+
+Paying with USDT or USDC needs a one-time approval for the sale contract to take that amount. Paying with BNB doesn't.
+
+### Confirm the purchase
+
+Review the amount, the AMX you'll receive and the network fee, then confirm.
+
+</Steps>
+
+## After you pay
+
+Amerox follows the purchase until the AMX lands on Amero X Network and shows its status. If delivery takes longer than a few minutes, Amerox tells you — your payment is recorded on BNB Smart Chain, so it isn't lost. If it still hasn't arrived after a while, contact [support@amerox.io](mailto:support@amerox.io) with your payment's transaction hash (you'll find it in **Activity**).

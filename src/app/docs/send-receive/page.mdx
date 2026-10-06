@@ -1,0 +1,45 @@
+export const metadata = {
+  title: "Send and receive",
+  description: "Send tokens safely, and share your address to receive them.",
+};
+
+# Send and receive
+
+## Receive
+
+Open **Receive** to see your address as text and as a QR code, with a **Copy address** button.
+
+<Screens items={[{ src: "/shots/extension/receive.png", alt: "The Receive screen with QR code and full address" }]} />
+
+<Callout type="warn" title="Check the network">
+Your address is the same on every EVM network, but assets only arrive on the network they're sent on. The Receive screen names the network you're on — make sure the sender uses that one. Assets sent on a different network won't appear here and are usually hard or impossible to recover.
+</Callout>
+
+## Send
+
+<Steps>
+
+### Enter the recipient
+
+Paste or type the address. Amerox checks it before you continue:
+
+- It must be a complete, valid address.
+- **Look-alike addresses are flagged.** Scammers send tiny transactions from addresses that start and end like ones you've used, hoping you'll copy theirs from your history later. If the address you entered resembles one from your activity, Amerox warns you.
+
+### Choose the amount
+
+Pick the asset and the amount. **MAX** leaves a little of the network's coin behind for the fee, and Amerox stops you if the amount plus the maximum fee is more than you have.
+
+### Review and confirm
+
+The review screen shows the full recipient address, the amount, the network and the maximum fee. Compare the address with the one you meant to send to — character by character for large amounts — then confirm.
+
+</Steps>
+
+<Callout type="tip" title="Sending a large amount?">
+Send a small test amount first, confirm it arrived, then send the rest.
+</Callout>
+
+## Activity
+
+Your recent transactions appear in **Activity**, with links to the network's block explorer. A transaction shows as pending until the network confirms it.

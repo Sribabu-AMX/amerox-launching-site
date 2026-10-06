@@ -1,0 +1,53 @@
+export const metadata = {
+  title: "Dapps and connected sites",
+  description: "Connect Amerox to dapps, read what they ask you to sign, and disconnect.",
+};
+
+# Dapps and connected sites
+
+Dapps (decentralised apps) are websites that work with your wallet — exchanges, games, marketplaces. Amerox shows up in a dapp's **Connect wallet** list as **Amerox**, next to any other wallet you have installed.
+
+## Connecting
+
+When a site asks to connect, Amerox shows an approval — in the Amerox popup — with:
+
+- the site's address (its origin),
+- which account it will see — you choose,
+- what connecting does and doesn't allow.
+
+<Screens items={[{ src: "/shots/extension/approval-connect.png", alt: "A site asking to connect, with accounts to choose", caption: "You choose which accounts a site sees." }]} />
+
+Connecting only shares your address. It does **not** let the site move funds or sign anything — every transaction and signature still needs your approval.
+
+## Approving requests
+
+Each request gets its own approval screen. Take a moment to read it:
+
+**Transactions** show the amount, the recipient or contract, the network and the maximum fee. If you don't have enough to cover the amount plus the fee, Amerox tells you before you try.
+
+**Messages (`personal_sign`)** show the exact text you're signing. Signing a message costs nothing and isn't a transaction — but whoever holds the signature can present it as proof it came from you.
+
+**Typed data (EIP-712)** is shown field by field. Watch for **permits**: a permit is a signature that lets someone spend your tokens without a separate transaction. Amerox labels it as a spending permission, names the spender, and flags **unlimited** amounts in red.
+
+<Screens items={[
+  { src: "/shots/extension/approval-transaction.png", alt: "A transaction approval with recipient and fees", caption: "A transaction" },
+  { src: "/shots/extension/approval-permit.png", alt: "A permit flagged as an unlimited spending permission", caption: "An unlimited permit, flagged" },
+]} />
+
+<Callout type="danger" title="Never sign what you don't understand">
+If a site pressures you to sign quickly, or a request doesn't match what you were doing, reject it. Rejecting is always safe.
+</Callout>
+
+Amerox never lets a site sign with the method called `eth_sign`, which signs unreadable data and is a common way funds are drained.
+
+## Switching networks
+
+If a dapp asks to switch networks — or to add a new one — Amerox asks you first. A switch changes which network every later request and signature applies to.
+
+## Disconnecting a site
+
+Open **Sites** to see every connected site, with the accounts it can see, and **Disconnect** any of them.
+
+<Callout type="warn" title="Disconnecting is not revoking">
+Disconnecting stops a site from seeing your address and asking for signatures. It does **not** cancel token approvals you already granted on-chain — those stay valid until you revoke them with a transaction, using a token-approval checker on the network's explorer.
+</Callout>

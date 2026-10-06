@@ -1,0 +1,65 @@
+export const metadata = {
+  title: "Swap",
+  description: "Swap tokens at the best available price, and understand slippage and approvals.",
+};
+
+# Swap
+
+Swap exchanges one token for another without leaving the wallet. Amerox asks liquidity sources for a price, shows you the best quote, and only sends a transaction after you review it.
+
+## Where swaps work
+
+| Network | Liquidity sources |
+|---|---|
+| Ethereum | 0x aggregator |
+| Base | 0x aggregator |
+| Arbitrum One | 0x aggregator |
+| Polygon | 0x aggregator |
+| BNB Smart Chain | 0x aggregator and the Amerox DEX |
+
+Swaps aren't available on Amero X Network yet — they need the Amerox DEX on Amero X, which isn't live. Switch to one of the networks above to swap.
+
+The 0x aggregator compares prices across many exchanges (such as Uniswap and PancakeSwap) and routes your trade through the best one.
+
+## How to swap
+
+<Steps>
+
+### Pick the tokens and amount
+
+Choose what you pay and what you receive from the token list for that network, and enter the amount. If you pay with the network's own coin (ETH, BNB or POL), leave a little for fees.
+
+### Read the quote
+
+The quote shows:
+
+- **Rate** — how much you get per token you pay.
+- **Minimum received** — the least you'll get after slippage (see below). If the price moves further than that, the swap cancels itself and you keep your tokens.
+- **Network fee** — the estimated gas cost.
+- **Route** — which source the trade goes through.
+
+Quotes refresh automatically. An expired quote must be refreshed before you can continue.
+
+<Screens items={[{ src: "/shots/extension/swap.png", alt: "A swap quote from BNB to BTCB", caption: "A live quote on BNB Smart Chain." }]} />
+
+### Approve the token (first time only)
+
+Swapping a token (rather than a network's own coin, like ETH or BNB) needs a one-time **approval** that lets the swap contract move that token. Amerox shows this as step 1 of 2. Read the approval screen: it names the spender and the amount.
+
+### Review and confirm
+
+The swap opens its own review screen with the amounts, network and fee. Confirm to send it.
+
+</Steps>
+
+## Slippage
+
+Prices move between the moment you get a quote and the moment your transaction is included in a block. **Slippage tolerance** is how much worse than the quote you're willing to accept. Presets are 0.1%, 0.5% and 1%, or set your own.
+
+<Callout type="warn">
+A high slippage tolerance on a small, illiquid token invites "sandwich" attacks, where someone trades around your transaction and takes the difference. Keep it low unless a swap keeps failing.
+</Callout>
+
+## Fees
+
+You pay the network fee for each transaction. Any other fee included in a quote is shown before you confirm.

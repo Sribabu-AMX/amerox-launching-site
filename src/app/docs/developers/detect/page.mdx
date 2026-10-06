@@ -1,0 +1,56 @@
+export const metadata = {
+  title: "Detect the wallet",
+  description: "Find the Amerox provider with EIP-6963, window.amerox or window.ethereum.",
+};
+
+# Detect the wallet
+
+## EIP-6963 (recommended)
+
+Amerox announces itself with an `eip6963:announceProvider` event as soon as the page loads, and again every time the page dispatches `eip6963:requestProvider`. Listen for the announcement, then ask:
+
+```ts
+type EIP6963ProviderDetail = {
+  info: { uuid: string; name: string; icon: string; rdns: string };
+  provider: EIP1193Provider;
+};
+
+const wallets = new Map<string, EIP6963ProviderDetail>();
+
+window.addEventListener("eip6963:announceProvider", (event) => {
+  const detail = (event as CustomEvent<EIP6963ProviderDetail>).detail;
+  wallets.set(detail.info.rdns, detail);
+});
+window.dispatchEvent(new Event("eip6963:requestProvider"));
+
+const amerox = wallets.get("io.amerox.wallet")?.provider;
+```
+
+The announcement's `info`:
+
+| Field | Value |
+|---|---|
+| `rdns` | `io.amerox.wallet` — stable; use this to identify Amerox. |
+| `name` | `Amerox` |
+| `icon` | A PNG data URI of the Amerox coin. It is inlined on purpose: a remote icon URL would tell a third party which sites the user visits. |
+| `uuid` | A fresh value on every page load. Don't store it; key on `rdns`. |
+
+Most connect kits (wagmi, RainbowKit, Reown AppKit, thirdweb, ConnectKit) read EIP-6963 automatically and list **Amerox** by name with its icon.
+
+## `window.amerox`
+
+The provider is always available as `window.amerox`, so a dapp that specifically targets Amerox can use it directly.
+
+## `window.ethereum`
+
+Amerox sets `window.ethereum` **only if no other wallet has already set it**. If another wallet owns `window.ethereum` and exposes a `providers` array, Amerox adds itself to that array. It never replaces another wallet.
+
+```ts
+const isAmerox = (window as any).ethereum?.isAmerox === true;
+```
+
+Because the injected global depends on which extensions a user has installed and in what order, prefer EIP-6963.
+
+## Iframes
+
+The provider is injected into iframes as well. Every request carries its own frame's origin, and connection grants are per origin.

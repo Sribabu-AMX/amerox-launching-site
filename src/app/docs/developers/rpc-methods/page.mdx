@@ -1,0 +1,82 @@
+export const metadata = {
+  title: "RPC methods",
+  description: "Every JSON-RPC method the Amerox provider supports, and the ones it refuses.",
+};
+
+# RPC methods
+
+Call every method through `provider.request({ method, params })`. A request that isn't a single object, or has no method name, rejects with `-32600`.
+
+## Open — no connection, no prompt
+
+<MethodTable rows={[
+  ["eth_chainId", "The active network's chain ID as hex, e.g. \"0xdcf\"."],
+  ["net_version", "The active chain ID as a decimal string."],
+  ["eth_accounts", "Connected accounts, or [] if not connected or the wallet is locked."],
+  ["web3_clientVersion", "\"Amerox/v<version>\"."],
+  ["web3_sha3", "Keccak-256 of the input, via the active network."],
+]} />
+
+## Prompt — opens an approval every time
+
+<MethodTable rows={[
+  ["eth_requestAccounts", "Connect. Returns granted accounts without a prompt if already connected and unlocked."],
+  ["wallet_requestPermissions", "Same window as eth_requestAccounts; returns an eth_accounts permission."],
+  ["eth_sendTransaction", "Review and send a transaction. Resolves with the transaction hash."],
+  ["personal_sign", "Sign a message. Params: [message, address]."],
+  ["eth_signTypedData_v4", "Sign EIP-712 typed data. Params: [address, typedData]."],
+  ["eth_signTypedData_v3", "Sign EIP-712 typed data (v3 encoding). Params: [address, typedData]."],
+  ["wallet_switchEthereumChain", "Switch the active network. 4902 if the chain isn't known."],
+  ["wallet_addEthereumChain", "Add a network after the user reviews it. Does not switch. No connection needed."],
+  ["wallet_watchAsset", "Suggest a token for the user's list."],
+]} />
+
+## Granted — needs a connection, no prompt
+
+<MethodTable rows={[
+  ["wallet_getPermissions", "The current eth_accounts permission, or []."],
+  ["wallet_revokePermissions", "Disconnect this site. No connection needed. Resolves null."],
+]} />
+
+## Proxy — forwarded to the active network
+
+These go to the RPC endpoint of the network the wallet is on. Node errors (such as a revert on `eth_call`) are passed back to you unchanged.
+
+<MethodTable rows={[
+  ["eth_blockNumber", "Latest block number."],
+  ["eth_getBalance", "Balance of an address."],
+  ["eth_getCode", "Contract bytecode."],
+  ["eth_getStorageAt", "A storage slot."],
+  ["eth_call", "Read-only contract call."],
+  ["eth_estimateGas", "Gas estimate for a transaction."],
+  ["eth_gasPrice", "Current gas price."],
+  ["eth_maxPriorityFeePerGas", "Suggested priority fee (EIP-1559 networks)."],
+  ["eth_feeHistory", "Fee history (EIP-1559 networks)."],
+  ["eth_getBlockByNumber", "A block by number."],
+  ["eth_getBlockByHash", "A block by hash."],
+  ["eth_getTransactionByHash", "A transaction."],
+  ["eth_getTransactionReceipt", "A transaction receipt."],
+  ["eth_getTransactionCount", "An address's nonce."],
+  ["eth_getLogs", "Logs. The block range is capped at 1,000 blocks."],
+  ["eth_getProof", "Merkle proof (EIP-1186)."],
+]} />
+
+## Refused — never supported
+
+These reject with code `4200` and a message explaining why.
+
+<MethodTable rows={[
+  ["eth_sign", "Signs arbitrary bytes with no context — the bytes can be a transaction hash that drains the account."],
+  ["eth_signTransaction", "Signing without broadcasting is not supported. Use eth_sendTransaction."],
+  ["eth_signTypedData", "Legacy typed data (v1) has no domain separator and is replayable. Use v4."],
+  ["eth_decrypt", "Deprecated: reuses the signing key for a second purpose."],
+  ["eth_getEncryptionPublicKey", "Deprecated."],
+  ["eth_coinbase", "Deprecated: conflicts with per-site account scoping. Use eth_accounts."],
+  ["eth_sendRawTransaction", "Arbitrary raw broadcast is not proxied. Use eth_sendTransaction, or your own RPC."],
+]} />
+
+Any other method name also rejects with `4200`.
+
+## Legacy API
+
+`provider.enable()`, `provider.send()` and `provider.sendAsync()` exist so older dapps don't crash, but they aren't a supported API. Use `request()`.

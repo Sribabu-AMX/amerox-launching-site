@@ -1,0 +1,81 @@
+export const metadata = {
+  title: "Libraries",
+  description: "Use Amerox with viem, wagmi and ethers, and define Amero X Network.",
+};
+
+# Libraries
+
+Amerox needs no SDK. Standard libraries find it through EIP-6963 and talk to it as an EIP-1193 provider.
+
+## Define Amero X Network
+
+With viem (also used by wagmi):
+
+```ts
+import { defineChain } from "viem";
+
+export const ameroX = defineChain({
+  id: 3535,
+  name: "Amero X Network",
+  nativeCurrency: { name: "AMX", symbol: "AMX", decimals: 18 },
+  rpcUrls: { default: { http: ["https://amxrpc.link/public/rpc"] } },
+  blockExplorers: { default: { name: "AMXScan", url: "https://amxscan.com" } },
+});
+```
+
+## wagmi
+
+wagmi discovers EIP-6963 wallets by default, so Amerox appears among the connectors when it's installed.
+
+```ts
+import { createConfig, http } from "wagmi";
+import { bsc, mainnet } from "wagmi/chains";
+import { ameroX } from "./chains";
+
+export const config = createConfig({
+  chains: [ameroX, mainnet, bsc],
+  transports: {
+    [ameroX.id]: http(),
+    [mainnet.id]: http(),
+    [bsc.id]: http(),
+  },
+  // multiInjectedProviderDiscovery is on by default — Amerox is found via EIP-6963.
+});
+```
+
+To target Amerox specifically, find the connector whose `id` is `io.amerox.wallet`:
+
+```ts
+import { useConnect } from "wagmi";
+
+const { connectors, connect } = useConnect();
+const amerox = connectors.find((c) => c.id === "io.amerox.wallet");
+if (amerox) connect({ connector: amerox });
+```
+
+## viem
+
+```ts
+import { createWalletClient, custom } from "viem";
+import { ameroX } from "./chains";
+
+const client = createWalletClient({ chain: ameroX, transport: custom(amerox) }); // provider from EIP-6963
+const [account] = await client.requestAddresses();
+const hash = await client.sendTransaction({ account, to: "0x…", value: 1_000_000_000_000_000n });
+```
+
+## ethers v6
+
+```ts
+import { BrowserProvider } from "ethers";
+
+const provider = new BrowserProvider(amerox); // provider from EIP-6963
+const signer = await provider.getSigner();     // triggers eth_requestAccounts
+const sig = await signer.signMessage("Hello from my dapp");
+```
+
+## Things to avoid
+
+- Don't read `provider.chainId`; call `eth_chainId` or use your library's chain state.
+- Don't use `eth_sign` or `signer.signTransaction()` — they're [refused](/docs/developers/rpc-methods#refused--never-supported).
+- Don't assume `window.ethereum` is Amerox. Another wallet may own it.

@@ -1,26 +1,289 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Design tokens — taken from the Amerox DEX landing (Amerox-dex/src/index.css,
+   tailwind.config.cjs, LandingPage.tsx) so the two sites read as one brand. */
+@theme {
+  --color-ink: #050505;
+  --color-page: #0a0a0a;
+  --color-card: #111111;
+  --color-card-2: #161616;
+  --color-fg: #ededed;
+  --color-gold: #fcda7b;
+  --color-gold-bright: #ffd951;
+  --color-gold-deep: #fdb648;
+  --color-gold-muted: #e2b649;
+  --color-pos: #2adb72;
+  --color-neg: #f87171;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-montserrat), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-gambarino), "Iowan Old Style", Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --animate-marquee: marquee 40s linear infinite;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    background: var(--color-page);
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-page);
+    color: #fff;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: #eab308;
+    color: #000;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  /* Anchor jumps land below the fixed navbar. */
+  [id] {
+    scroll-margin-top: 7rem;
+  }
+}
+
+@layer utilities {
+  .bg-gold-gradient {
+    background: linear-gradient(45deg, #ffd951, #fcda7b, #fdb648);
+  }
+  .text-gold-gradient {
+    background: linear-gradient(100deg, #ffe58a 0%, #fcda7b 40%, #fdb648 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(253, 182, 72, 0.3);
+  }
+  .glow-gold-lg {
+    box-shadow: 0 0 60px rgba(252, 218, 123, 0.18), 0 30px 80px rgba(0, 0, 0, 0.6);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
+
+/* Hero motion. Plain CSS, so the headline, buttons and coins come in from the HTML alone — they
+   never wait for (or depend on) JavaScript. Each element sets its own animation-delay. */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hero-fade {
+  from { opacity: 0; }
+}
+@keyframes hero-blur {
+  from { opacity: 0; filter: blur(10px); transform: translateY(12px); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+@keyframes hero-pop {
+  from { transform: scale(0); }
+}
+@keyframes hero-coin {
+  from { opacity: 0; transform: scale(0.4); }
+  to { opacity: 0.55; transform: none; }
+}
+@keyframes hero-sway {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(4deg) translateY(-6px); }
+  75% { transform: rotate(-4deg) translateY(6px); }
+}
+@keyframes hero-float {
+  0%, 100% { transform: translateY(-14px) rotate(-6deg); }
+  50% { transform: translateY(14px) rotate(6deg); }
+}
+@keyframes hero-scroll-line {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.hero-rise { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-fade { animation: hero-fade 1s ease both; }
+.hero-blur { animation: hero-blur 0.8s ease-out both; }
+.hero-pop { animation: hero-pop 1.5s ease-out both; }
+.hero-coin { animation: hero-coin 1.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-sway { animation: hero-sway 9s ease-in-out infinite; }
+.hero-float { animation: hero-float 7s ease-in-out infinite; }
+.hero-scroll-line { animation: hero-scroll-line 2.2s ease-in-out infinite; }
+@keyframes device-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.device-float { animation: device-float 8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise, .hero-fade, .hero-blur, .hero-pop, .hero-sway, .hero-float, .hero-scroll-line, .device-float { animation: none; }
+  .hero-coin { animation: none; opacity: 0.55; }
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ── Docs content (MDX) ─────────────────────────────────────────────────────── */
+.docs-content {
+  color: #d4d4d4;
+  font-size: 16px;
+  line-height: 1.75;
+}
+.docs-content > * + * {
+  margin-top: 1.1em;
+}
+.docs-content h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 1.15;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.docs-content h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: #fff;
+  margin-top: 2.4em;
+  padding-top: 0.2em;
+  letter-spacing: -0.01em;
+}
+.docs-content h3 {
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: #fff;
+  margin-top: 1.8em;
+}
+.docs-content h2 + *,
+.docs-content h3 + * {
+  margin-top: 0.6em;
+}
+.docs-content a {
+  color: var(--color-gold);
+  text-decoration: underline;
+  text-decoration-color: rgb(252 218 123 / 0.35);
+  text-underline-offset: 3px;
+}
+.docs-content a:hover {
+  text-decoration-color: var(--color-gold);
+}
+.docs-content strong {
+  color: #fff;
+  font-weight: 600;
+}
+.docs-content ul,
+.docs-content ol {
+  padding-left: 1.3em;
+}
+.docs-content ul {
+  list-style: disc;
+}
+.docs-content ol {
+  list-style: decimal;
+}
+.docs-content li + li {
+  margin-top: 0.35em;
+}
+.docs-content li::marker {
+  color: rgb(252 218 123 / 0.6);
+}
+.docs-content :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 6px;
+  padding: 0.12em 0.4em;
+  color: #fde7a7;
+  overflow-wrap: anywhere;
+}
+.docs-content pre {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+  background: #0d0d0d;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+}
+.docs-content pre code {
+  display: grid;
+}
+.docs-content figure[data-rehype-pretty-code-figure] {
+  margin-top: 1.2em;
+}
+.docs-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+/* Tables scroll inside their own box on narrow screens instead of widening the page. */
+.docs-content .docs-table {
+  overflow-x: auto;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 16px;
+}
+.docs-content .docs-table thead tr {
+  background: rgb(255 255 255 / 0.03);
+}
+.docs-content .docs-table tr:last-child td {
+  border-bottom: 0;
+}
+/* Content inside <Steps> */
+.docs-content .docs-steps > * + * {
+  margin-top: 0.9em;
+}
+.docs-content .docs-steps > h3 {
+  margin-top: 2em;
+}
+.docs-content .docs-steps > h3:first-child {
+  margin-top: 0;
+}
+.docs-content th {
+  text-align: left;
+  color: #fff;
+  font-weight: 600;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  padding: 0.6em 0.8em;
+  white-space: nowrap;
+}
+.docs-content td {
+  border-bottom: 1px solid rgb(255 255 255 / 0.06);
+  padding: 0.6em 0.8em;
+  vertical-align: top;
+}
+.docs-content hr {
+  border: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  margin: 2.5em 0;
+}
+.docs-content blockquote {
+  border-left: 2px solid rgb(252 218 123 / 0.5);
+  padding-left: 1em;
+  color: #a3a3a3;
 }

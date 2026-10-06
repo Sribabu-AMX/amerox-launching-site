@@ -1,0 +1,50 @@
+export const metadata = {
+  title: "Signing",
+  description: "Sign messages with personal_sign and EIP-712 typed data in Amerox.",
+};
+
+# Signing
+
+Every signature request opens its own approval window. The user sees exactly what they're signing and which account signs it.
+
+## personal_sign
+
+```ts
+const signature = await amerox.request({
+  method: "personal_sign",
+  params: [message, account], // message: UTF-8 string or 0x-prefixed hex
+});
+```
+
+- `params[0]` must be a string; otherwise `-32602`.
+- `params[1]` must be an account your site was granted; otherwise `4100`.
+- The approval shows the decoded text, the method (EIP-191), the encoding and the length.
+
+This is the method to use for **Sign-In with Ethereum** (EIP-4361) and other login messages.
+
+## eth_signTypedData_v4
+
+```ts
+const signature = await amerox.request({
+  method: "eth_signTypedData_v4",
+  params: [account, JSON.stringify(typedData)], // object or JSON string
+});
+```
+
+Include a `domain` with `chainId` and `verifyingContract` — it is what stops a signature being replayed on another chain or contract. `eth_signTypedData_v3` is also supported for older contracts.
+
+The approval screen renders the message field by field. **Permits** (such as EIP-2612 `Permit`) are labelled as spending permissions: the spender, token, amount and expiry are shown, and unlimited amounts are flagged in red. Users can still approve them — but they'll know what they're approving.
+
+<Callout type="tip">
+Request only what you need. A permit for the exact trade amount is far more likely to be approved than an unlimited one.
+</Callout>
+
+## Methods that are refused
+
+| Method | Use instead |
+|---|---|
+| `eth_sign` | `personal_sign` or `eth_signTypedData_v4` |
+| `eth_signTypedData` (v1) | `eth_signTypedData_v4` |
+| `eth_signTransaction` | `eth_sendTransaction` |
+
+All reject with `4200`.

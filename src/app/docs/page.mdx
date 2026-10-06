@@ -1,0 +1,45 @@
+export const metadata = {
+  title: "Introduction",
+  description: "What Amerox is, and where to start with the wallet or with building on it.",
+};
+
+# Amerox documentation
+
+Amerox is a self-custody wallet for **Amero X Network** and the EVM chains you already use. It runs as a Chrome extension and as an Android app on Google Play.
+
+Self-custody means your keys are created on your device and never leave it. There is no Amerox account, no email and no server holding your funds — which also means nobody, including Amero X, can recover your wallet for you. Your **recovery phrase** is the only way back in.
+
+<Callout type="tip" title="New to Amerox?">
+Start with [Install Amerox](/docs/install), then [Create or import a wallet](/docs/create-wallet). It takes about a minute.
+</Callout>
+
+## Using Amerox
+
+<Cards>
+  <Card title="Install Amerox" href="/docs/install">Add the extension to Chrome, or get the Android app on Google Play.</Card>
+  <Card title="Create or import a wallet" href="/docs/create-wallet">Set a password and back up your recovery phrase.</Card>
+  <Card title="Swap" href="/docs/swap">Swap tokens at the best available price on five networks.</Card>
+  <Card title="Buy AMX" href="/docs/buy-amx">Pay with BNB, USDT or USDC and receive AMX on Amero X.</Card>
+  <Card title="Dapps and connected sites" href="/docs/connected-sites">Connect safely and read what a site asks you to sign.</Card>
+  <Card title="Security tips" href="/docs/security">The habits that keep crypto safe.</Card>
+</Cards>
+
+## Building a dapp
+
+Amerox is a standard [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193) provider and announces itself through [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) with the reverse-DNS name `io.amerox.wallet`. If your dapp already supports injected wallets through wagmi, viem, ethers or a modern connect kit, Amerox works without changes.
+
+<Cards>
+  <Card title="Developer overview" href="/docs/developers">Quick start and how requests are handled.</Card>
+  <Card title="RPC methods" href="/docs/developers/rpc-methods">Every supported method, and the ones that are refused.</Card>
+</Cards>
+
+## At a glance
+
+| | |
+|---|---|
+| Platforms | Chrome 111+ and other Chromium browsers; Android 7.0+ on Google Play (US, UK, Nigeria and Ukraine for now) |
+| Built-in networks | Amero X Network, Ethereum, Base, Arbitrum One, Polygon, BNB Smart Chain — plus Tron in the Android app only |
+| Custom networks | Any EVM network you add |
+| Recovery phrase | 12 or 24 words (BIP-39) |
+| Vault encryption | Argon2id key derivation, XChaCha20-Poly1305 |
+| Dapp standards | EIP-1193, EIP-6963, EIP-712 (typed data v3 and v4) |

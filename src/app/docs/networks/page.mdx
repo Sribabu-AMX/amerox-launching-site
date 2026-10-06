@@ -1,0 +1,57 @@
+export const metadata = {
+  title: "Networks",
+  description: "The six networks built into Amerox, Tron in the Android app, and how to add your own.",
+};
+
+# Networks
+
+Amerox has six networks built in. Switch between them from the network badge at the top of the wallet, or from **Settings → Network**.
+
+| Network | Chain ID | Coin | Fee model | Explorer |
+|---|---|---|---|---|
+| **Amero X Network** | 3535 | AMX | Legacy | [amxscan.com](https://amxscan.com) |
+| Ethereum | 1 | ETH | EIP-1559 | [etherscan.io](https://etherscan.io) |
+| Base | 8453 | ETH | EIP-1559 | [basescan.org](https://basescan.org) |
+| Arbitrum One | 42161 | ETH | EIP-1559 | [arbiscan.io](https://arbiscan.io) |
+| Polygon | 137 | POL | EIP-1559 | [polygonscan.com](https://polygonscan.com) |
+| BNB Smart Chain | 56 | BNB | Legacy | [bscscan.com](https://bscscan.com) |
+
+<Screens items={[{ src: "/shots/extension/networks.png", alt: "The Networks screen with connection status for each network" }]} />
+
+## Tron (Android app only)
+
+The Android app also has **Tron**. The Chrome extension doesn't include it yet.
+
+| Network | Coins | Fees | Explorer |
+|---|---|---|---|
+| Tron | TRX and USDT (TRC-20) | Paid in TRX (energy and bandwidth) | [tronscan.org](https://tronscan.org) |
+
+Tron isn't an EVM network: on Tron, Amerox shows TRX and USDT only, and other TRC-20 tokens can't be imported yet. In the Android app you can also move USDT between Tron and the EVM networks — every fee and the minimum you'll receive are shown before you confirm.
+
+Amero X Network is Amerox's home network. Its native coin is **AMX**, which also pays its network fees.
+
+## Amero X Network details
+
+Use these to add Amero X to another wallet or tool:
+
+| | |
+|---|---|
+| Network name | Amero X Network |
+| Chain ID | `3535` (hex `0xdcf`) |
+| Currency symbol | AMX (18 decimals) |
+| RPC URL | `https://amxrpc.link/public/rpc` |
+| Block explorer | `https://amxscan.com` |
+
+## Add a custom network
+
+You can add any other EVM network yourself, or approve one that a dapp suggests.
+
+1. Open **Settings → Networks** and choose **Add network**.
+2. Enter the network name, RPC URL, chain ID and currency symbol. An explorer URL is optional.
+3. Amerox connects to the RPC endpoint and checks that it reports the chain ID you entered before saving it. Your browser will ask you to allow Amerox to reach that endpoint.
+
+<Callout type="warn" title="Only add networks you trust">
+A network's RPC endpoint sees your address and the transactions you send through it, and a dishonest one can show wrong balances. Use the endpoint published by the network itself.
+</Callout>
+
+When a dapp asks to add a network, Amerox shows you the details first and verifies the endpoint when you confirm. A dapp can't add or switch networks without your approval.

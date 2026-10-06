@@ -1,0 +1,38 @@
+export const metadata = {
+  title: "Back up and recover",
+  description: "Keep your recovery phrase safe, view it again, and get back into your wallet.",
+};
+
+# Back up and recover
+
+Your **recovery phrase** (also called a seed phrase) is the master key to every account created from it. With it, you can restore your wallet on any device. Without it, nobody can — not even Amero X.
+
+## Keeping your phrase safe
+
+- Write it on paper, in order. Consider a second copy in a separate safe place.
+- Never type it into a website, and never share it with anyone — including anyone claiming to be support.
+- Don't photograph it, screenshot it, email it or store it in a notes or cloud app.
+
+## View your recovery phrase again
+
+Open **Settings → Reveal recovery phrase**. Amerox shows a warning first, then asks for your password — every time, even if the wallet is already unlocked — and the words stay blurred until you choose to show them.
+
+If you copy the phrase, Amerox warns you first — other apps on your computer can read the clipboard — and clears the clipboard again shortly afterwards.
+
+## Forgot your password?
+
+Your password only unlocks the wallet on this device. If you forget it, choose **Forgot password?** on the unlock screen. You have two options:
+
+**Restore from recovery phrase.** Enter your recovery phrase and choose a new password. Your accounts come back.
+
+**Erase wallet and start over.** Deletes the wallet from this browser. Only do this if you have your recovery phrase, or the wallet has no funds.
+
+<Callout type="warn" title="Imported private keys are not in your phrase">
+Accounts you added by importing a private key, or from a *different* recovery phrase, are not covered by your main recovery phrase. Keep those keys and phrases backed up separately — restoring from your main phrase won't bring them back.
+</Callout>
+
+## Moving to a new computer
+
+1. Install Amerox on the new browser.
+2. Choose **Import an existing wallet** and enter your recovery phrase.
+3. Re-add any extra accounts from **Accounts**, and re-import any private keys.

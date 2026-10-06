@@ -1,0 +1,48 @@
+export const metadata = {
+  title: "Transactions",
+  description: "Send transactions through Amerox and understand how fees are chosen per network.",
+};
+
+# Transactions
+
+## eth_sendTransaction
+
+```ts
+const hash = await amerox.request({
+  method: "eth_sendTransaction",
+  params: [{
+    from: account,        // optional — defaults to the first connected account
+    to: "0x…",
+    value: "0x2386f26fc10000", // 0.01 in wei, hex
+    data: "0x…",          // optional calldata
+  }],
+});
+```
+
+- `params[0]` must be a transaction object; otherwise `-32602`.
+- `from` must be an account your site was granted; otherwise `4100`.
+- The user reviews the transaction in an approval window; rejecting gives `4001`.
+- On success the promise resolves with the transaction hash. It resolves when the transaction is broadcast, not when it's mined — wait for the receipt with `eth_getTransactionReceipt` or your library's helper.
+
+## What the user sees
+
+The approval screen decodes what it can: the amount and the asset, the recipient (in full), known actions such as token approvals, the network, the fee model, the gas limit and the **maximum** fee. If the account can't cover the value plus the maximum fee, Amerox tells the user before they try.
+
+## Fee models
+
+Amerox signs each transaction with the fee model the network uses:
+
+| Network | Chain ID | Transaction type |
+|---|---|---|
+| Amero X Network | 3535 | Legacy (type 0) |
+| BNB Smart Chain | 56 | Legacy (type 0) |
+| Ethereum | 1 | EIP-1559 (type 2) |
+| Base | 8453 | EIP-1559 (type 2) |
+| Arbitrum One | 42161 | EIP-1559 (type 2) |
+| Polygon | 137 | EIP-1559 (type 2) |
+
+Every transaction is signed with the network's chain ID (EIP-155), so it can't be replayed on another chain.
+
+## Choosing the network
+
+A transaction is always sent on the wallet's **active** network. Check it with `eth_chainId`, and switch first with [`wallet_switchEthereumChain`](/docs/developers/networks) if needed.

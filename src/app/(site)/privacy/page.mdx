@@ -1,0 +1,64 @@
+# Privacy policy
+
+*Last updated: September 2026*
+
+This policy explains how the **Amerox Wallet** browser extension ("Amerox", "the extension") and this website handle information. They are provided by **Amero X LTD**, a company registered in the United Kingdom (company number 16941691), 71-75 Shelton Street, Covent Garden, London, United Kingdom ("we", "us").
+
+## The short version
+
+- Amerox is a **self-custody** wallet. Your recovery phrase and private keys are created and stored **only on your device**, encrypted with your password. We never receive them and cannot recover them.
+- There is **no Amerox account**. We don't ask for your name, email or phone number to use the wallet.
+- The extension contains **no analytics, advertising or tracking**.
+- To show balances and send transactions, the extension must talk to blockchain networks and a few services. Those requests reveal your wallet address and your device's IP address to the service that answers them — as with any wallet.
+
+## Information stored on your device
+
+The extension keeps the following in your browser's extension storage, on your device:
+
+- your wallet, encrypted (Argon2id key derivation, XChaCha20-Poly1305 encryption);
+- your accounts' public addresses and the names you give them;
+- settings (network, theme, auto-lock time), custom networks and tokens you add;
+- the sites you've connected and the accounts each may see;
+- a record of your recent transactions, to show your activity.
+
+We have no access to this data. Removing the extension deletes it from your browser.
+
+## Information that leaves your device
+
+When you use the wallet, it sends requests to the services below. We don't send them any personal information beyond what the request itself needs.
+
+| Service | What it receives | Why |
+|---|---|---|
+| **Blockchain network providers** (RPC endpoints) for the networks you use — for example Amero X Network's public RPC, and public endpoints for Ethereum, Base, Arbitrum One, Polygon and BNB Smart Chain, or a custom endpoint you add | Your wallet address(es), the transactions you sign, and read requests; your IP address | To read balances and activity and to broadcast your transactions |
+| **Amerox swap service** (operated by us) | The network, the tokens and amount you want to swap, and your wallet address | To fetch swap quotes and build the swap transaction |
+| **0x** (0x Labs), through our swap service | The same swap details, forwarded by our service | To find the best swap price |
+| **CoinGecko** | Which tokens' prices are requested — not your address | To show prices and charts |
+| **Websites you connect to** | The account addresses you choose to share, and the requests you approve | So the site can work with your wallet |
+
+Our swap service may log requests, including IP addresses, to operate and secure the service; we don't use these logs to build a profile of you. Third-party services handle data under their own privacy policies.
+
+## Blockchains are public
+
+Transactions you send are recorded permanently on public blockchains, visible to anyone, and can't be changed or deleted — by us or anyone else. Your wallet address and its transaction history are public by nature.
+
+## This website
+
+This website does not use cookies, analytics or tracking scripts, and loads no content from third parties (fonts and images are served from this site). Our hosting provider keeps standard server logs, such as IP addresses and browser type, to deliver and protect the site.
+
+If you email us, we use your message and email address to reply.
+
+## Your rights
+
+If UK or EU data-protection law applies to you, you have rights to access, correct, delete, restrict or object to the processing of personal data we hold about you, and to complain to the UK Information Commissioner's Office (ico.org.uk) or your local authority. Because the wallet keeps your data on your device, most of it is only ever held by you. To exercise your rights, email [contact@amerox.io](mailto:contact@amerox.io).
+
+## Children
+
+Amerox is not intended for anyone under 18.
+
+## Changes
+
+We'll update this page when our practices change and revise the date above. Significant changes will be announced on this website.
+
+## Contact
+
+Amero X LTD — [contact@amerox.io](mailto:contact@amerox.io) · Support: [support@amerox.io](mailto:support@amerox.io)

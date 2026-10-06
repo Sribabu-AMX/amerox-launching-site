@@ -1,0 +1,69 @@
+export const metadata = {
+  title: "Networks and Amero X",
+  description: "Switch and add chains from your dapp, and the Amero X Network parameters.",
+};
+
+# Networks and Amero X
+
+## Amero X Network
+
+| Parameter | Value |
+|---|---|
+| Chain ID | `3535` (`0xdcf`) |
+| Name | Amero X Network |
+| Native currency | AMX, 18 decimals |
+| RPC URL | `https://amxrpc.link/public/rpc` |
+| Block explorer | `https://amxscan.com` |
+| Transaction type | Legacy (type 0) |
+
+Amero X is built into Amerox, so you only need `wallet_switchEthereumChain` — never `wallet_addEthereumChain` — to move users onto it.
+
+## Switch network
+
+```ts
+try {
+  await amerox.request({
+    method: "wallet_switchEthereumChain",
+    params: [{ chainId: "0xdcf" }], // hex or decimal both work
+  });
+} catch (err: any) {
+  if (err.code === 4902) {
+    // Not known to the wallet — add it (see below), then switch again.
+  }
+}
+```
+
+| Result | Meaning |
+|---|---|
+| resolves `null` | Switched — or it was already the active network (no prompt in that case). |
+| `4001` | The user declined. |
+| `4902` | The chain isn't built in and hasn't been added. |
+| `-32602` | `chainId` is missing or invalid. |
+| `4100` | Your site isn't connected. |
+
+A switch is a prompt because it changes which network every later read and signature applies to. After it, every connected site receives `chainChanged`.
+
+## Add a network
+
+```ts
+await amerox.request({
+  method: "wallet_addEthereumChain",
+  params: [{
+    chainId: "0x…",
+    chainName: "My Network",
+    nativeCurrency: { name: "Coin", symbol: "COIN", decimals: 18 },
+    rpcUrls: ["https://rpc.my-network.example"],
+    blockExplorerUrls: ["https://explorer.my-network.example"],
+  }],
+});
+// Adding does not switch — switch next:
+await amerox.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x…" }] });
+```
+
+- Doesn't require a connection.
+- The user sees the details first. Nothing is fetched from your RPC URL until they confirm; then Amerox asks the endpoint for its chain ID and **refuses to add the network if it doesn't match** the `chainId` you sent.
+- Resolves `null` on success (EIP-3085).
+- Built-in chains (3535, 1, 8453, 42161, 137, 56) can't be re-added: `-32602`. Use `wallet_switchEthereumChain`.
+- Counts as ten requests against your site's [rate limit](/docs/developers/limits).
+
+Libraries such as wagmi already follow the switch → `4902` → add → switch sequence.

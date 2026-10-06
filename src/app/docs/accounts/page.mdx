@@ -1,0 +1,37 @@
+export const metadata = {
+  title: "Accounts",
+  description: "Add accounts from your phrase, import a private key or another phrase, or watch an address.",
+};
+
+# Accounts
+
+One recovery phrase can hold many accounts, each with its own address. Open **Accounts** to see them, switch between them, or add more.
+
+## Add an account
+
+Amerox offers four ways to add an account, and says clearly what each one means for your backup:
+
+| Option | What it does | Covered by your recovery phrase? |
+|---|---|---|
+| **Create a new account** | The next address from your existing phrase. | Yes — nothing new to write down. |
+| **Import a private key** | Adds one account from a private key you paste in. | **No.** Keep the key backed up separately. |
+| **Import a different recovery phrase** | Adds accounts from a second phrase. | **No.** That phrase stays their only backup. |
+| **Track an address** | Watch any address's balance, with no key. | Not applicable — a watched account can never send or sign. |
+
+<Callout type="info">
+Amerox only ever asks for a recovery phrase or private key inside the extension, on these screens. It never asks anywhere else.
+</Callout>
+
+## Watch-only accounts
+
+A tracked address shows its balance and activity, but Amerox holds no key for it. While it's selected, you can't send, swap or connect it to a site for signing.
+
+## Address layout
+
+Wallets disagree about where a recovery phrase puts its accounts. Amerox supports the three common layouts:
+
+- **Standard (BIP-44)** — used by MetaMask and most wallets. This is the default.
+- **Ledger Live**
+- **Ledger legacy**
+
+If you imported a phrase and your balance is missing, open **Accounts → Advanced → Change address layout** and try the layout of the wallet you came from. Changing it doesn't move any funds — it changes which addresses your phrase produces.

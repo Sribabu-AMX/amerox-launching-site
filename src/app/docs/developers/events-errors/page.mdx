@@ -1,0 +1,50 @@
+export const metadata = {
+  title: "Events and errors",
+  description: "The events the Amerox provider emits and every error code it returns.",
+};
+
+# Events and errors
+
+## Events
+
+Subscribe with `provider.on(event, listener)`; remove with `removeListener` (or `off`). `once` and `removeAllListeners` are also available.
+
+| Event | Payload | When |
+|---|---|---|
+| `connect` | `{ chainId }` (hex) | The user approved a connection for your site. |
+| `accountsChanged` | `string[]` | Your site was connected, the user switched accounts, or your site was disconnected (`[]`). |
+| `chainChanged` | `string` (hex) | The active network changed. |
+| `disconnect` | `{ code: 4900, message }` | Your site was disconnected — by `wallet_revokePermissions` or from the wallet's **Sites** screen. |
+
+Events are delivered only to sites with a connection; an unconnected page receives none.
+
+<Callout type="tip">
+`accountsChanged` with an empty array means "no accounts for you right now". Treat it as disconnected.
+</Callout>
+
+## Errors
+
+Rejections are `ProviderRpcError` objects with `code`, `message` and sometimes `data`.
+
+| Code | Meaning | Common causes |
+|---|---|---|
+| `4001` | User rejected | The user declined, closed the window, or didn't answer within five minutes. |
+| `4100` | Unauthorized | Your site isn't connected; the request names an account you weren't granted; or the wallet locked before the user answered. |
+| `4200` | Unsupported method | A [refused method](/docs/developers/rpc-methods#refused--never-supported) or an unknown method name. |
+| `4900` | Disconnected | Sent with the `disconnect` event. |
+| `4902` | Unrecognised chain | `wallet_switchEthereumChain` to a chain that hasn't been added. |
+| `-32600` | Invalid request | `request()` wasn't called with a single `{ method, params }` object. |
+| `-32602` | Invalid params | Missing or malformed parameters, or re-adding a built-in chain. |
+| `-32005` | Limit exceeded | Rate limit, too many pending requests, or an `eth_getLogs` range over 1,000 blocks. |
+
+For **proxy** methods (`eth_call`, `eth_estimateGas` and the rest), errors returned by the network's node — such as a contract revert and its data — are passed through as the node sent them.
+
+```ts
+try {
+  await amerox.request({ method: "eth_sendTransaction", params: [tx] });
+} catch (err: any) {
+  if (err.code === 4001) return showToast("Transaction cancelled");
+  if (err.code === 4100) return reconnect();
+  throw err;
+}
+```

@@ -1,0 +1,40 @@
+export const metadata = {
+  title: "Limits",
+  description: "Rate limits, request queues, timeouts and range caps in the Amerox provider.",
+};
+
+# Limits
+
+Amerox limits what one site can ask for, so a misbehaving page can't flood the user with prompts or the network with reads.
+
+## Rate limit
+
+Each site (origin) has a request budget that holds up to **60 units** and refills at **2 units per second**.
+
+| Request | Cost |
+|---|---|
+| Most methods | 1 |
+| Methods that open an approval | 5 |
+| `wallet_addEthereumChain` | 10 |
+
+When the budget runs out, requests reject with `-32005 Rate limit exceeded. Slow down.` Batch reads, cache results, and avoid polling faster than you need.
+
+## Pending approvals
+
+| Limit | Value | Error |
+|---|---|---|
+| Waiting approvals, all sites | 8 | `-32005 Too many pending requests.` |
+| Waiting approvals, one site | 3 | `-32005 Too many pending requests from this site. Answer them first.` |
+| Time to answer | 5 minutes | `4001` |
+
+Send the next request after the previous one settles, rather than queueing several prompts at once.
+
+If the wallet locks while a request is waiting, the request rejects with `4100`.
+
+## eth_getLogs
+
+An `eth_getLogs` filter with an explicit `fromBlock` and `toBlock` may span at most **1,000 blocks** — the limit of Amero X Network's public RPC. Larger ranges reject with `-32005`; split them into chunks, or query an indexer. A filter that ends at `"latest"` (or omits `toBlock`) is passed to the network as-is, and the node applies its own limits.
+
+## Request timeout
+
+A request that hasn't settled after five minutes rejects on the page side with `4001 Request timed out waiting for the wallet.`
